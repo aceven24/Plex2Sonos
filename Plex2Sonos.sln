@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plex2Sonos.Plex", "Plex2Sonos.Plex\Plex2Sonos.Plex.csproj", "{213695AE-A361-433E-93DF-927D2132BEFB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plex2Sonos.Sonos", "Plex2Sonos.Sonos\Plex2Sonos.Sonos.csproj", "{9B0A4D8A-09B5-4103-83EE-5865B6E7A753}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7B3C0F97-2BD5-4BCC-8040-4C5081C978DD}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{213695AE-A361-433E-93DF-927D2132BEFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{213695AE-A361-433E-93DF-927D2132BEFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{213695AE-A361-433E-93DF-927D2132BEFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{213695AE-A361-433E-93DF-927D2132BEFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B0A4D8A-09B5-4103-83EE-5865B6E7A753}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B0A4D8A-09B5-4103-83EE-5865B6E7A753}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B0A4D8A-09B5-4103-83EE-5865B6E7A753}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B0A4D8A-09B5-4103-83EE-5865B6E7A753}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

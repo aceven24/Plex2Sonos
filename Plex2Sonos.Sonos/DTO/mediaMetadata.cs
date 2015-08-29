@@ -36,7 +36,7 @@ namespace Plex2Sonos.Sonos.DTO
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElement(Order = 1)]
+        [System.Xml.Serialization.XmlElement(Order = 1, ElementName = "trackMetadata")]
         public trackMetadata Item
         {
             get

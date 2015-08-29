@@ -140,8 +140,8 @@ namespace Plex2Sonos.Server
                 album = track.Parent.Name,
                 albumId = String.Format("Alb/{0}", track.Parent.Key),
                 artist = track.Parent.Parent.Name,
+                albumArtist = track.Parent.Parent.Name,
                 albumArtURI = (!String.IsNullOrEmpty(track.Parent.ThumbLocation) ? new albumArtUrl() { Value = String.Format("http://192.168.1.227:8888/ImageService/GetImage?image={0}", track.Parent.ThumbLocation) } : null),
-                artistId = String.Format("Art/{0}",track.Parent.Parent.Key),
                 canPlay = true,
                 canPlaySpecified = true,
                 duration = track.Duration / 1000,
@@ -180,7 +180,7 @@ namespace Plex2Sonos.Server
 
         private AbstractMedia[] RetrieveAlbums(string artistID)
         {
-            return Server.MusicSections.SelectMany(p => p.Artists).Single(p => p.Key == artistID).Albums.Select(p => new mediaCollection() { id = String.Format("Alb/{0}", p.Key), itemType = itemType.album, displayType = "list", canEnumerate = true, canEnumerateSpecified = true, canPlay = true, canPlaySpecified = true, title = p.Name, summary = p.Summary, artist = p.Parent.Name, albumArtURI = (!String.IsNullOrEmpty(p.ThumbLocation) ? new albumArtUrl() { Value = String.Format("http://192.168.1.227:8888/ImageService/GetImage?image={0}", p.ThumbLocation) } : null), artistId = String.Format("Art/{0}", p.Parent.Key) }).ToArray();
+            return Server.MusicSections.SelectMany(p => p.Artists).Single(p => p.Key == artistID).Albums.Select(p => new mediaCollection() { id = String.Format("Alb/{0}", p.Key), itemType = itemType.album, displayType = "list", canEnumerate = true, canEnumerateSpecified = true, canPlay = true, canPlaySpecified = true, title = p.Name, summary = p.Summary, artist = p.Parent.Name, albumArtURI = (!String.IsNullOrEmpty(p.ThumbLocation) ? new albumArtUrl() { Value = String.Format("http://192.168.1.227:8888/ImageService/GetImage?image={0}", p.ThumbLocation) } : null)}).ToArray();
         }
 
         private AbstractMedia[] RetrieveTracks(string albumID)

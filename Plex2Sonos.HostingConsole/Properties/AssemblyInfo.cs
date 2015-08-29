@@ -1,20 +1,18 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Runtime.Serialization;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Plex2Sonos.Sonos")]
+[assembly: AssemblyTitle("Plex2Sonos.HostingConsole")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("Plex2Sonos.Sonos")]
+[assembly: AssemblyProduct("Plex2Sonos.HostingConsole")]
 [assembly: AssemblyCopyright("Copyright © Microsoft 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: ContractNamespace("http://www.sonos.com/Services/1.1", ClrNamespace = "www.sonos.com.Services._1._11")]
-
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
@@ -22,7 +20,7 @@ using System.Runtime.Serialization;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("9b0a4d8a-09b5-4103-83ee-5865b6e7a753")]
+[assembly: Guid("b96fb62e-a35f-4401-9542-6cfb6c9e85b5")]
 
 // Version information for an assembly consists of the following four values:
 //

@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9B0A4D8A-09B5-4103-83EE-5865B6E7A753}</ProjectGuid>
+    <ProjectGuid>{69DBEB4C-3347-4E56-A208-CA55CC2EB5FA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Plex2Sonos.Sonos</RootNamespace>
-    <AssemblyName>Plex2Sonos.Sonos</AssemblyName>
+    <RootNamespace>Plex2Sonos.Server</RootNamespace>
+    <AssemblyName>Plex2Sonos.Server</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -33,9 +33,10 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Messaging" />
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -44,41 +45,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="customFaultDetail.cs" />
-    <Compile Include="DTO\AbstractMedia.cs" />
-    <Compile Include="DTO\albumArtUrl.cs" />
-    <Compile Include="DTO\credentials.cs" />
-    <Compile Include="DTO\extendedMetadata.cs" />
-    <Compile Include="DTO\getExtendedMetadataRequest.cs" />
-    <Compile Include="DTO\getExtendedMetadataRequestText.cs" />
-    <Compile Include="DTO\getExtendedMetadataResponse.cs" />
-    <Compile Include="DTO\getExtendedMetadataTextResponse.cs" />
-    <Compile Include="DTO\getLastUpdateRequest.cs" />
-    <Compile Include="DTO\getLastUpdateResponse.cs" />
-    <Compile Include="DTO\getMediaMetadataRequest.cs" />
-    <Compile Include="DTO\getMediaMetaResponse.cs" />
-    <Compile Include="DTO\getMediaURIRequest.cs" />
-    <Compile Include="DTO\getMediaURIResponse.cs" />
-    <Compile Include="DTO\getMetadataRequest.cs" />
-    <Compile Include="DTO\getMetadataResponse.cs" />
-    <Compile Include="DTO\httpHeader.cs" />
-    <Compile Include="DTO\itemType.cs" />
-    <Compile Include="DTO\lastUpdate.cs" />
-    <Compile Include="DTO\login.cs" />
-    <Compile Include="DTO\loginToken.cs" />
-    <Compile Include="DTO\mediaCollection.cs" />
-    <Compile Include="DTO\mediaList.cs" />
-    <Compile Include="DTO\mediaMetadata.cs" />
-    <Compile Include="DTO\mediaUriAction.cs" />
-    <Compile Include="DTO\property.cs" />
-    <Compile Include="DTO\relatedBrowse.cs" />
-    <Compile Include="DTO\relatedPlay.cs" />
-    <Compile Include="DTO\relatedText.cs" />
-    <Compile Include="DTO\searchRequest.cs" />
-    <Compile Include="DTO\searchResponse.cs" />
-    <Compile Include="DTO\trackMetadata.cs" />
-    <Compile Include="ISonosSoap.cs" />
+    <Compile Include="IImageService.cs" />
+    <Compile Include="ImageProxyServer.cs" />
+    <Compile Include="MusicProxyServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Plex2Sonos.Plex\Plex2Sonos.Plex.csproj">
+      <Project>{213695ae-a361-433e-93df-927d2132befb}</Project>
+      <Name>Plex2Sonos.Plex</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Plex2Sonos.Sonos\Plex2Sonos.Sonos.csproj">
+      <Project>{9b0a4d8a-09b5-4103-83ee-5865b6e7a753}</Project>
+      <Name>Plex2Sonos.Sonos</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

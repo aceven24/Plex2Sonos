@@ -21,21 +21,41 @@ namespace Plex2Sonos.Server
                 return PlexMediaServer.Instance();
             }
         }
+
+        public static string BoundedIPAndPort { get; set; }
         public getExtendedMetadataResponse GetExtendedMetadata(getExtendedMetadataRequest request)
         {
 
             var itemType = request.id.Split('/')[0];
             var itemIndex = request.id.Substring(4);
+            var response = new getExtendedMetadataResponse();
             switch (itemType)
             {
                 case "S":
                     return null;
                 case "Art":
-                    return null;
+                    var artist = Server.LookupArtist(itemIndex);
+                    response.getExtendedMetadataResult = new extendedMetadata() { Item = BuildArtist(artist) };
+                    if (!String.IsNullOrEmpty(artist.Summary))
+                    {
+                        response.getExtendedMetadataResult.relatedText = new relatedText[] { new relatedText() { id = request.id, type = "ARTIST_BIO" } };
+                    }
+                    return response;
                 case "Alb":
-                    return null;
+                    var album = Server.LookupAlbum(itemIndex);
+                    response.getExtendedMetadataResult = new extendedMetadata() { Item = BuildAlbum(album) };
+                    var list = new List<relatedText>();
+                    if (!String.IsNullOrEmpty(album.Summary))
+                    {
+                        list.Add(new relatedText() { id = request.id, type = "ALBUM_NOTES" });
+                    }
+                    if (!String.IsNullOrEmpty(album.Parent.Summary))
+                    {
+                        list.Add(new relatedText() { id = request.id, type = "ARTIST_BIO" });
+                    }
+                    response.getExtendedMetadataResult.relatedText = list.ToArray();
+                    return response; ;
                 case "Trk":
-                    var response = new getExtendedMetadataResponse();
                     response.getExtendedMetadataResult = new extendedMetadata() { Item = RetrieveSingleTrackInfo(itemIndex) };
                     return response;
             }
@@ -44,9 +64,36 @@ namespace Plex2Sonos.Server
 
         public getExtendedMetadataTextResponse GetExtendedMetadataText(getExtendedMetadataTextRequest request)
         {
-            throw new NotImplementedException();
-        }
 
+            var itemType = request.id.Split('/')[0];
+            var itemIndex = request.id.Substring(4);
+            var response = new getExtendedMetadataTextResponse();
+            switch (itemType)
+            {
+                case "S":
+                    return null;
+                case "Art":
+                    var artist = Server.LookupArtist(itemIndex);
+                    response.getExtendedMetadataTextResult = artist.Summary;
+                    return response;
+                case "Alb":
+                    var album = Server.LookupAlbum(itemIndex);
+                    switch(request.type)
+                    {
+                        case "ALBUM_NOTES":
+                            response.getExtendedMetadataTextResult = album.Summary;
+                            return response;
+                        case "ARTIST_BIO":
+                            response.getExtendedMetadataTextResult = album.Parent.Summary;
+                            return response;
+                    }
+                    break;                   
+                case "Trk":
+                    return null;
+
+            }
+            return null;
+        }
         public getLastUpdateResponse GetLastUpdate(getLastUpdateRequest request)
         {
             return new getLastUpdateResponse() { getLastUpdateResult = new lastUpdate() { catalog = this.Server.MusicSections.Max(p => p.LastUpdated).Ticks.ToString(), favorites = this.Server.MusicSections.Max(p => p.LastUpdated).Ticks.ToString() } };
@@ -129,7 +176,7 @@ namespace Plex2Sonos.Server
         }
         private mediaMetadata RetrieveSingleTrackInfo(string trackID)
         {
-            var track = Server.MusicSections.SelectMany(p => p.Artists).SelectMany(p => p.Albums).SelectMany(p => p.Tracks).Single(p => p.Key == trackID);
+            var track = Server.LookupTrack(trackID);
             return BuildMediaMetadata(track);
         }
 
@@ -141,6 +188,7 @@ namespace Plex2Sonos.Server
                 albumId = String.Format("Alb/{0}", track.Parent.Key),
                 artist = track.Parent.Parent.Name,
                 albumArtist = track.Parent.Parent.Name,
+                albumArtistId = track.Parent.Parent.Key,
                 albumArtURI = (!String.IsNullOrEmpty(track.Parent.ThumbLocation) ? new albumArtUrl() { Value = String.Format("http://192.168.1.227:8888/ImageService/GetImage?image={0}", track.Parent.ThumbLocation) } : null),
                 canPlay = true,
                 canPlaySpecified = true,
@@ -175,17 +223,27 @@ namespace Plex2Sonos.Server
 
         private AbstractMedia[] RetreiveArtists(int sectionID)
         {
-            return Server.MusicSections.Single(p => p.SectionID == sectionID).Artists.Select(p => new mediaCollection() { id = String.Format("Art/{0}", p.Key), summary = p.Summary, country = p.Country, itemType = itemType.artist, canPlay = true, canPlaySpecified = true, canEnumerate = true, canEnumerateSpecified = true, title = p.Name, albumArtURI = (!String.IsNullOrEmpty(p.ThumbLocation) ? new albumArtUrl() { Value = String.Format("http://192.168.1.227:8888/ImageService/GetImage?image={0}", p.ThumbLocation) } : null) }).ToArray();
+            return Server.MusicSections.Single(p => p.SectionID == sectionID).Artists.Select(p => BuildArtist(p)).ToArray();
+        }
+
+        private static mediaCollection BuildArtist(Artist p)
+        {
+            return new mediaCollection() { id = String.Format("Art/{0}", p.Key), country = p.Country, itemType = itemType.artist, canPlay = true, canPlaySpecified = true, canEnumerate = true, canEnumerateSpecified = true, title = p.Name, albumArtURI = (!String.IsNullOrEmpty(p.ThumbLocation) ? new albumArtUrl() { Value = String.Format("http://192.168.1.227:8888/ImageService/GetImage?image={0}", p.ThumbLocation) } : null) };
         }
 
         private AbstractMedia[] RetrieveAlbums(string artistID)
         {
-            return Server.MusicSections.SelectMany(p => p.Artists).Single(p => p.Key == artistID).Albums.Select(p => new mediaCollection() { id = String.Format("Alb/{0}", p.Key), itemType = itemType.album, displayType = "list", canEnumerate = true, canEnumerateSpecified = true, canPlay = true, canPlaySpecified = true, title = p.Name, summary = p.Summary, artist = p.Parent.Name, albumArtURI = (!String.IsNullOrEmpty(p.ThumbLocation) ? new albumArtUrl() { Value = String.Format("http://192.168.1.227:8888/ImageService/GetImage?image={0}", p.ThumbLocation) } : null)}).ToArray();
+            return Server.LookupArtist(artistID).Albums.Select(p => BuildAlbum(p)).ToArray();
+        }
+
+        private static mediaCollection BuildAlbum(Album p)
+        {
+            return new mediaCollection() { id = String.Format("Alb/{0}", p.Key), itemType = itemType.album, canEnumerate = true, canEnumerateSpecified = true, canPlay = true, canPlaySpecified = true, title = p.Name, summary = p.Summary, artist = p.Parent.Name, albumArtURI = (!String.IsNullOrEmpty(p.ThumbLocation) ? new albumArtUrl() { Value = String.Format("http://192.168.1.227:8888/ImageService/GetImage?image={0}", p.ThumbLocation) } : null) };
         }
 
         private AbstractMedia[] RetrieveTracks(string albumID)
         {
-            return Server.MusicSections.SelectMany(p => p.Artists).SelectMany(p => p.Albums).Single(p => p.Key == albumID).Tracks.OrderBy(p => p.Index).Select(track =>
+            return Server.LookupAlbum(albumID).Tracks.OrderBy(p => p.Index).Select(track =>
 
                   BuildMediaMetadata(track)).ToArray();
         }
@@ -198,7 +256,7 @@ namespace Plex2Sonos.Server
                 itemType = itemType.track,
                 id = String.Format("Trk/{0}", track.Key),
                 title = track.Name,
-                mimeType = String.Format("audio/{0}", track.AudioCodec),
+                mimeType = String.Format("audio/{0}", track.Container.ToLower())
             };
         }
 
